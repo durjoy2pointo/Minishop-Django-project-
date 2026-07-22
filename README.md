@@ -1,0 +1,1 @@
+# Minishop-Django-project-
