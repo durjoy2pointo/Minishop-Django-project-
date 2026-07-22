@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Checkout {% endblock title %}
+
+{% block content %}
+
+<div class="hero-wrap hero-bread"
+     style="background-image: url('{% static 'images/bg_6.jpg' %}');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+
+                <p class="breadcrumbs">
+                    <span class="mr-2">
+                        <a href="{% url 'index' %}">Home</a>
+                    </span>
+                    <span>Checkout</span>
+                </p>
+
+                <h1 class="mb-0 bread">Checkout</h1>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+
+            <div class="col-xl-10 ftco-animate">
+
+                <form method="POST" class="billing-form">
+                    {% csrf_token %}
+
+                    <h3 class="mb-4 billing-heading">
+                        Billing Details
+                    </h3>
+
+
+                    {% if addresses %}
+
+                        <div class="form-group">
+                            <label>Address Type</label>
+
+                            <select name="address_id"
+                                    id="address-select"
+                                    class="form-control"
+                                    required>
+
+                                {% for address in addresses %}
+
+                                    <option value="{{ address.id }}"
+                                            data-contact="{{ address.contact_number }}"
+                                            data-division="{{ address.division }}"
+                                            data-district="{{ address.district }}"
+                                            data-thana="{{ address.thana }}"
+                                            data-corporation="{{ address.corporation_or_union }}"
+                                            data-area="{{ address.area_or_village }}"
+                                            data-additional="{{ address.additional_info|default:'' }}">
+
+                                        {{ address.get_address_type_display }}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+                        </div>
+
+
+                        <div class="address-details-box">
+
+                            <h4 id="selected-address-type"></h4>
+
+                            <p>
+                                <strong>Contact:</strong>
+                                <span id="contact-number"></span>
+                            </p>
+
+                            <p>
+                                <strong>Division:</strong>
+                                <span id="division"></span>
+                            </p>
+
+                            <p>
+                                <strong>District:</strong>
+                                <span id="district"></span>
+                            </p>
+
+                            <p>
+                                <strong>Thana:</strong>
+                                <span id="thana"></span>
+                            </p>
+
+                            <p>
+                                <strong>Corporation / Union:</strong>
+                                <span id="corporation"></span>
+                            </p>
+
+                            <p>
+                                <strong>Area / Village:</strong>
+                                <span id="area"></span>
+                            </p>
+
+                            <p id="additional-row">
+                                <strong>Additional:</strong>
+                                <span id="additional"></span>
+                            </p>
+
+                        </div>
+
+
+                        <div class="row mt-5 pt-3 d-flex">
+
+                            <!-- CART TOTAL -->
+                            <div class="col-md-6 d-flex">
+
+                                <div class="cart-detail cart-total bg-light p-3 p-md-4">
+
+                                    <h3 class="billing-heading mb-4">
+                                        Cart Total
+                                    </h3>
+
+                                    <p class="d-flex">
+                                        <span>Subtotal</span>
+
+                                        <span id="subtotal"
+                                              data-subtotal="{{ subtotal }}">
+                                            {{ subtotal|floatformat:2 }} Tk
+                                        </span>
+                                    </p>
+
+                                    <p class="d-flex">
+                                        <span>Delivery</span>
+
+                                        <span id="delivery-charge">
+                                            {{ delivery_charge|floatformat:2 }} Tk
+                                        </span>
+                                    </p>
+
+                                    <p class="d-flex">
+                                        <span>Discount</span>
+
+                                        <span>
+                                            {{ discount|floatformat:2 }} Tk
+                                        </span>
+                                    </p>
+
+                                    <hr>
+
+                                    <p class="d-flex total-price">
+                                        <span>Total</span>
+
+                                        <span id="grand-total">
+                                            {{ total|floatformat:2 }} Tk
+                                        </span>
+                                    </p>
+
+                                </div>
+                            </div>
+
+
+                            <!-- PAYMENT METHOD -->
+                            <div class="col-md-6">
+
+                                <div class="cart-detail bg-light p-3 p-md-4">
+
+                                    <h3 class="billing-heading mb-4">
+                                        Payment Method
+                                    </h3>
+
+                                    <div class="form-group">
+                                        <div class="radio">
+
+                                            <label>
+                                                <input type="radio"
+                                                       name="payment_method"
+                                                       value="online"
+                                                       class="mr-2"
+                                                       required>
+
+                                                Online Payment
+                                            </label>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <div class="radio">
+
+                                            <label>
+                                                <input type="radio"
+                                                       name="payment_method"
+                                                       value="cod"
+                                                       class="mr-2"
+                                                       required>
+
+                                                Cash on Delivery
+                                            </label>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <div class="checkbox">
+
+                                            <label>
+                                                <input type="checkbox"
+                                                       name="terms"
+                                                       class="mr-2"
+                                                       required>
+
+                                                I have read and accept the
+                                                terms and conditions
+                                            </label>
+
+                                        </div>
+                                    </div>
+
+
+                                    <button type="submit"
+                                            class="btn btn-primary py-3 px-4 btn-block">
+
+                                        Place an Order
+
+                                    </button>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="alert alert-warning">
+                            No address found. Please add an address first.
+                        </div>
+
+                        <a href="{% url 'add_address' %}"
+                           class="btn btn-primary">
+
+                            Add Address
+
+                        </a>
+
+                    {% endif %}
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<style>
+    .address-details-box {
+        padding: 25px;
+        margin-top: 20px;
+        background: #f8f9fa;
+        border: 1px solid #eeeeee;
+        border-radius: 6px;
+    }
+
+    .address-details-box h4 {
+        margin-bottom: 18px;
+        font-weight: 600;
+        color: #222;
+    }
+
+    .address-details-box p {
+        margin-bottom: 8px;
+    }
+
+    .cart-detail {
+        width: 100%;
+        border-radius: 6px;
+    }
+
+    .cart-total p {
+        justify-content: space-between;
+    }
+
+    .total-price {
+        font-size: 20px;
+        font-weight: 700;
+        color: #111;
+    }
+</style>
+
+
+<script>
+    const addressSelect = document.getElementById('address-select');
+    const subtotalElement = document.getElementById('subtotal');
+
+    function showSelectedAddress() {
+        if (!addressSelect) {
+            return;
+        }
+
+        const selectedOption =
+            addressSelect.options[addressSelect.selectedIndex];
+
+        document.getElementById('selected-address-type').textContent =
+            selectedOption.textContent.trim();
+
+        document.getElementById('contact-number').textContent =
+            selectedOption.dataset.contact;
+
+        document.getElementById('division').textContent =
+            selectedOption.dataset.division;
+
+        document.getElementById('district').textContent =
+            selectedOption.dataset.district;
+
+        document.getElementById('thana').textContent =
+            selectedOption.dataset.thana;
+
+        document.getElementById('corporation').textContent =
+            selectedOption.dataset.corporation;
+
+        document.getElementById('area').textContent =
+            selectedOption.dataset.area;
+
+
+        const additional = selectedOption.dataset.additional;
+        const additionalRow =
+            document.getElementById('additional-row');
+
+        if (additional) {
+            document.getElementById('additional').textContent =
+                additional;
+
+            additionalRow.style.display = 'block';
+        } else {
+            additionalRow.style.display = 'none';
+        }
+
+
+        const district =
+            selectedOption.dataset.district.trim().toLowerCase();
+
+        const subtotal =
+            parseFloat(subtotalElement.dataset.subtotal) || 0;
+
+        let deliveryCharge;
+
+        if (district === 'dhaka') {
+            deliveryCharge = 60;
+        } else {
+            deliveryCharge = 120;
+        }
+
+        const discount = 0;
+        const grandTotal =
+            subtotal + deliveryCharge - discount;
+
+        document.getElementById('delivery-charge').textContent =
+            deliveryCharge.toFixed(2) + ' Tk';
+
+        document.getElementById('grand-total').textContent =
+            grandTotal.toFixed(2) + ' Tk';
+    }
+
+
+    if (addressSelect) {
+        showSelectedAddress();
+
+        addressSelect.addEventListener(
+            'change',
+            showSelectedAddress
+        );
+    }
+</script>
+
+{% endblock content %}

@@ -1,0 +1,429 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} {{ product.title }} {% endblock title %}
+
+{% block content %}
+
+<div class="hero-wrap hero-bread"
+     style="background-image: url('{% static 'images/bg_6.jpg' %}');">
+
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+
+            <div class="col-md-9 ftco-animate text-center">
+
+                <p class="breadcrumbs">
+                    <span class="mr-2">
+                        <a href="{% url 'index' %}">Home</a>
+                    </span>
+
+                    <span>Product Details</span>
+                </p>
+
+                <h1 class="mb-0 bread">
+                    {{ product.title }}
+                </h1>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<section class="ftco-section">
+    <div class="container">
+
+        <div class="row">
+
+            <!-- PRODUCT IMAGE -->
+            <div class="col-lg-6 mb-5 ftco-animate">
+
+                <a href="{{ product.picture.url }}"
+                   class="image-popup prod-img-bg">
+
+                    <img src="{{ product.picture.url }}"
+                         class="img-fluid"
+                         alt="{{ product.title }}">
+
+                </a>
+
+            </div>
+
+
+            <!-- PRODUCT DETAILS -->
+            <div class="col-lg-6 product-details pl-md-5 ftco-animate">
+
+                <h3>{{ product.title }}</h3>
+
+                <div class="rating d-flex">
+
+                    <p class="text-left mr-4">
+                        <a href="#" class="mr-2">5.0</a>
+
+                        <a href="#">
+                            <span class="ion-ios-star-outline"></span>
+                        </a>
+
+                        <a href="#">
+                            <span class="ion-ios-star-outline"></span>
+                        </a>
+
+                        <a href="#">
+                            <span class="ion-ios-star-outline"></span>
+                        </a>
+
+                        <a href="#">
+                            <span class="ion-ios-star-outline"></span>
+                        </a>
+
+                        <a href="#">
+                            <span class="ion-ios-star-outline"></span>
+                        </a>
+                    </p>
+
+                    <p class="text-left mr-4">
+                        <a href="#" class="mr-2" style="color: #000;">
+                            100
+                            <span style="color: #bbb;">Rating</span>
+                        </a>
+                    </p>
+
+                    <p class="text-left">
+                        <a href="#" class="mr-2" style="color: #000;">
+                            500
+                            <span style="color: #bbb;">Sold</span>
+                        </a>
+                    </p>
+
+                </div>
+
+
+                <!-- PRICE -->
+                {% if product.discount_price %}
+
+                    <p class="price">
+                        <span class="mr-2 price-dc">
+                            BDT {{ product.price|floatformat:2 }}
+                        </span>
+
+                        <span class="price-sale">
+                            BDT {{ product.discount_price|floatformat:2 }}
+                        </span>
+                    </p>
+
+                {% else %}
+
+                    <p class="price">
+                        <span>
+                            BDT {{ product.price|floatformat:2 }}
+                        </span>
+                    </p>
+
+                {% endif %}
+
+
+                <p>{{ product.description }}</p>
+
+
+                <div class="product-information mb-4">
+
+                    <p>
+                        <strong>Gender:</strong>
+                        {{ product.get_gender_display }}
+                    </p>
+
+                    <p>
+                        <strong>Category:</strong>
+                        {{ product.get_category_display }}
+                    </p>
+
+                </div>
+
+
+                <!-- QUANTITY -->
+                <div class="quantity-wrapper mb-4">
+
+                    <label class="quantity-label">
+                        Quantity
+                    </label>
+
+                    <div class="quantity-box">
+
+                        <button type="button"
+                                class="quantity-btn"
+                                id="minus-btn">
+                            −
+                        </button>
+
+                        <input type="number"
+                               id="quantity"
+                               class="quantity-input"
+                               value="1"
+                               min="1"
+                               max="100"
+                               readonly>
+
+                        <button type="button"
+                                class="quantity-btn"
+                                id="plus-btn">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- AUTHENTICATED USER BUTTONS -->
+                {% if user.is_authenticated %}
+
+                    <div class="product-buttons">
+
+                        <form method="POST"
+                              action="{% url 'add_to_cart' product.pk %}">
+
+                            {% csrf_token %}
+
+                            <input type="hidden"
+                                   name="quantity"
+                                   class="selected-quantity"
+                                   value="1">
+
+                            <button type="submit"
+                                    class="btn btn-black">
+                                Add to Cart
+                            </button>
+
+                        </form>
+
+
+                        <form method="POST"
+                              action="{% url 'buy_now' product.pk %}">
+
+                            {% csrf_token %}
+
+                            <input type="hidden"
+                                   name="quantity"
+                                   class="selected-quantity"
+                                   value="1">
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Buy Now
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                <!-- GUEST USER BUTTONS -->
+                {% else %}
+
+                    <div class="product-buttons">
+
+                        <a href="{% url 'login' %}?next={% url 'add_to_cart' product.pk %}&message=Please login to add product"
+                           class="btn btn-black">
+                            Add to Cart
+                        </a>
+
+                        <a href="{% url 'login' %}?next={% url 'buy_now' product.pk %}&message=Please login to buy product"
+                           class="btn btn-primary">
+                            Buy Now
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<style>
+    /* Image-এর নিচের অপ্রয়োজনীয় box remove */
+    .prod-img-bg {
+        display: block;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .prod-img-bg::before,
+    .prod-img-bg::after {
+        display: none !important;
+        content: none !important;
+    }
+
+    .prod-img-bg img {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        background: transparent;
+    }
+
+
+    /* Quantity */
+    .quantity-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .quantity-label {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 600;
+        color: #222;
+    }
+
+    .quantity-box {
+        display: inline-flex;
+        align-items: center;
+        overflow: hidden;
+        border: 1px solid #dbcc8f;
+        border-radius: 30px;
+        background: #fff;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .quantity-btn {
+        width: 48px;
+        height: 46px;
+        border: none;
+        background: #dbcc8f;
+        color: #222;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .quantity-btn:hover {
+        background: #c7b56e;
+        color: #fff;
+    }
+
+    .quantity-input {
+        width: 60px;
+        height: 46px;
+        border: none;
+        outline: none;
+        text-align: center;
+        background: #fff;
+        color: #111;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    .quantity-input::-webkit-inner-spin-button,
+    .quantity-input::-webkit-outer-spin-button {
+        appearance: none;
+        margin: 0;
+    }
+
+
+    /* Add to Cart এবং Buy Now */
+    .product-buttons {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .product-buttons form {
+        margin: 0;
+    }
+
+    .product-buttons .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 175px;
+        min-height: 50px;
+        padding: 13px 25px;
+        border-radius: 5px;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1;
+        opacity: 1 !important;
+    }
+
+    .product-buttons .btn-black {
+        background: #111 !important;
+        border: 1px solid #111 !important;
+        color: #fff !important;
+    }
+
+    .product-buttons .btn-black:hover {
+        background: #dbcc8f !important;
+        border-color: #dbcc8f !important;
+        color: #fff !important;
+    }
+
+    .product-buttons .btn-primary {
+        background: #dbcc8f !important;
+        border: 1px solid #dbcc8f !important;
+        color: #fff !important;
+    }
+
+    .product-buttons .btn-primary:hover {
+        background: #c7b56e !important;
+        border-color: #c7b56e !important;
+        color: #fff !important;
+    }
+
+    @media (max-width: 576px) {
+        .product-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .product-buttons form,
+        .product-buttons .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<script>
+    const quantityInput = document.getElementById('quantity');
+    const minusButton = document.getElementById('minus-btn');
+    const plusButton = document.getElementById('plus-btn');
+    const hiddenQuantityInputs =
+        document.querySelectorAll('.selected-quantity');
+
+    function updateQuantity(quantity) {
+        quantityInput.value = quantity;
+
+        hiddenQuantityInputs.forEach(function (input) {
+            input.value = quantity;
+        });
+    }
+
+    minusButton.addEventListener('click', function () {
+        const currentQuantity = parseInt(quantityInput.value);
+
+        if (currentQuantity > 1) {
+            updateQuantity(currentQuantity - 1);
+        }
+    });
+
+    plusButton.addEventListener('click', function () {
+        const currentQuantity = parseInt(quantityInput.value);
+
+        if (currentQuantity < 100) {
+            updateQuantity(currentQuantity + 1);
+        }
+    });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Address {% endblock title %}
+{% block content %}
+
+<div class="hero-wrap hero-bread"style="background-image: url('{% static 'images/bg_6.jpg' %}');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+
+                <p class="breadcrumbs">
+                    <span class="mr-2">
+                        <a href="{% url 'index' %}">Home</a>
+                    </span>
+                    <span>Address</span>
+                </p>
+
+                <h1 class="mb-0 bread">Add Address</h1>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+
+            <div class="col-md-8 col-lg-7">
+                <div class="p-5 bg-light shadow rounded">
+
+                    <h2 class="text-center mb-4">
+                        Delivery Address
+                    </h2>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label>Address Type</label>
+                            {{ form.address_type }}
+                            <small class="text-danger">
+                                {{ form.address_type.errors }}
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            {{ form.contact_number }}
+                            <small class="text-danger">
+                                {{ form.contact_number.errors }}
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Division</label>
+                            {{ form.division }}
+                            <small class="text-danger">
+                                {{ form.division.errors }}
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>District</label>
+                            {{ form.district }}
+                            <small class="text-danger">
+                                {{ form.district.errors }}
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Thana</label>
+                            {{ form.thana }}
+                            <small class="text-danger">
+                                {{ form.thana.errors }}
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Corporation / Union</label>
+                            {{ form.corporation_or_union }}
+                            <small class="text-danger">
+                                {{ form.corporation_or_union.errors }}
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Area / Village</label>
+                            {{ form.area_or_village }}
+                            <small class="text-danger">
+                                {{ form.area_or_village.errors }}
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Additional Information</label>
+                            {{ form.additional_info }}
+                            <small class="text-danger">
+                                {{ form.additional_info.errors }}
+                            </small>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary btn-block py-3">
+                            Save Address
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

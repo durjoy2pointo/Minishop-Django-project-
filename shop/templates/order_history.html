@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Order History {% endblock title %}
+
+{% block content %}
+
+<div class="hero-wrap hero-bread"
+     style="background-image: url('{% static 'images/bg_6.jpg' %}');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs">
+                    <span class="mr-2">
+                        <a href="{% url 'index' %}">Home</a>
+                    </span>
+                    <span>Order History</span>
+                </p>
+
+                <h1 class="mb-0 bread">Order History</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section">
+    <div class="container">
+
+        {% for order in orders %}
+
+        <div class="order-card">
+
+            <div class="order-header">
+                <div>
+                    <h4>Order #{{ order.id }}</h4>
+                    <small>{{ order.created_at|date:"d M Y, h:i A" }}</small>
+                </div>
+
+                <span class="order-status">
+                    {{ order.get_status_display }}
+                </span>
+            </div>
+
+            <div class="order-info">
+                <p>
+                    <strong>Total:</strong>
+                    {{ order.total_price|floatformat:2 }} Tk
+                </p>
+
+                <p>
+                    <strong>Payment:</strong>
+                    {{ order.get_payment_method_display }}
+                </p>
+
+                <p>
+                    <strong>Address:</strong>
+                    {{ order.address.get_address_type_display }},
+                    {{ order.address.area_or_village }},
+                    {{ order.address.thana }},
+                    {{ order.address.district }}
+                </p>
+            </div>
+
+            <div class="order-products">
+
+                {% for item in order.items.all %}
+
+                <div class="product-row">
+
+                    <img src="{{ item.product.picture.url }}"
+                         alt="{{ item.product.title }}">
+
+                    <div>
+                        <h5>{{ item.product.title }}</h5>
+
+                        <p>
+                            Quantity: {{ item.quantity }}
+                        </p>
+
+                        <p>
+                            Price: {{ item.price|floatformat:2 }} Tk
+                        </p>
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="text-center py-5">
+            <h4>No order history found</h4>
+
+            <a href="{% url 'shop' %}"
+               class="btn btn-primary mt-3">
+                Start Shopping
+            </a>
+        </div>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+<style>
+    .order-card {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .order-header h4 {
+        margin-bottom: 4px;
+    }
+
+    .order-status {
+        background: #dbcc8f;
+        color: #fff;
+        padding: 7px 15px;
+        border-radius: 4px;
+    }
+
+    .order-info {
+        padding: 18px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .order-info p {
+        margin-bottom: 7px;
+    }
+
+    .product-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding-top: 20px;
+    }
+
+    .product-row img {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 6px;
+    }
+
+    .product-row h5 {
+        margin-bottom: 8px;
+    }
+
+    .product-row p {
+        margin-bottom: 3px;
+    }
+
+    @media (max-width: 576px) {
+        .order-header {
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .product-row {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+{% endblock content %}
