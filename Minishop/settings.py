@@ -23,9 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-df!8xj3(kuv9s+80w%zxnk4_+t_8f(d))2=dhos0@1ws*b22*8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "minishop-django-project.onrender.com",
+    "127.0.0.1",
+    "localhost",
+]
 
 
 # Application definition
